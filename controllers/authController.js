@@ -1,20 +1,30 @@
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
 
-// @desc    Register new user
 exports.registerUser = async (req, res) => {
   try {
     const { name, email, rollno, password, role } = req.body;
 
-    if (!name || !email || !password)
+    if (!name || !email || !password || !rollno)
       return res
         .status(400)
-        .json({ message: 'Name, email, and password are required' });
+        .json({ message: 'Name, email, roll number, password are required' });
 
     if (role === 'student' && !rollno)
       return res
         .status(400)
         .json({ message: 'Roll number is required for students' });
+    if (role === 'admin') {
+      if (!rollno)
+        return res
+          .status(400)
+          .json({ message: 'Faculty number is required for admin' });
+      if (rollno !== process.env.ADMIN_ROLLNO)
+        return res
+          .status(400)
+          .json({ message: 'Invalid faculty number for admin' });
+      rollno = null;
+    }
 
     const userExists = await User.findOne({ email });
     if (userExists)
@@ -34,11 +44,12 @@ exports.registerUser = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res
+      .status(500)
+      .json({ message: 'Internal server error', error: err.message });
   }
 };
 
-// @desc    Login user
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -67,7 +78,6 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-// @desc    Get current user
 exports.getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
