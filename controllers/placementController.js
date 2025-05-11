@@ -3,11 +3,15 @@ const Placement = require('../models/Placement');
 // Create Placement (Admin only)
 exports.createPlacement = async (req, res) => {
   try {
+    if (!req.body)
+      return res.status(400).json({ message: 'Placement data is required' });
     const placement = await Placement.create({
       ...req.body,
       createdBy: req.user._id,
     });
-    res.status(201).json(placement);
+    res
+      .status(201)
+      .json({ message: 'Placement created successfully', placement });
   } catch (err) {
     res
       .status(400)
@@ -19,7 +23,9 @@ exports.createPlacement = async (req, res) => {
 exports.getAllPlacements = async (req, res) => {
   try {
     const placements = await Placement.find().sort({ createdAt: -1 });
-    res.json(placements);
+    if (placements.length === 0)
+      return res.status(404).json({ message: 'No placements found' });
+    res.json({ message: 'Placements fetched successfully', placements });
   } catch (err) {
     res
       .status(500)
@@ -33,7 +39,10 @@ exports.getPlacementById = async (req, res) => {
     const placement = await Placement.findById(req.params.id);
     if (!placement)
       return res.status(404).json({ message: 'Placement not found' });
-    res.json(placement);
+    res.json({
+      message: 'Placement fetched successfully',
+      placement,
+    });
   } catch (err) {
     res
       .status(500)
@@ -44,13 +53,14 @@ exports.getPlacementById = async (req, res) => {
 // Update placement for edits (Admin only)
 exports.updatePlacement = async (req, res) => {
   try {
-    const updated = await Placement.findByIdAndUpdate(req.params.id, req.body, {
+    if (!req.body)
+      return res.status(400).json({ message: 'Placement data is required' });
+    const data = await Placement.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
-    if (!updated)
-      return res.status(404).json({ message: 'Placement not found' });
-    res.json(updated);
+    if (!data) return res.status(404).json({ message: 'Placement not found' });
+    res.json({ message: 'Placement updated successfully', data });
   } catch (err) {
     res
       .status(400)
@@ -63,12 +73,14 @@ exports.deletePlacement = async (req, res) => {
   try {
     const deleted = await Placement.findByIdAndDelete(req.params.id);
     if (!deleted)
-      return res.status(404).json({ message: 'Placement not found' });
-    res.json({ message: 'Placement deleted' });
+      return res
+        .status(404)
+        .json({ message: 'Placement not found for deletion' });
+    res.json({ message: 'Placement deleted successfully' });
   } catch (err) {
     res
       .status(500)
-      .json({ message: 'Error deleting placement', error: err.message });
+      .json({ message: 'Error in deleting placement', error: err.message });
   }
 };
 
@@ -118,6 +130,11 @@ exports.editPlacementUpdate = async (req, res) => {
     const update = placement.updates.id(updateId);
     if (!update) {
       return res.status(404).json({ message: 'Update not found' });
+    }
+    if (updateType === update.updateType && message === update.message) {
+      return res
+        .status(400)
+        .json({ message: 'No changes detected in the update' });
     }
 
     if (updateType) update.updateType = updateType;

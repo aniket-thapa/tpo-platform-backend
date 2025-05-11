@@ -9,7 +9,7 @@ const {
 
 const { protect, adminOnly } = require('../middlewares/authMiddleware');
 
-router.post('/', protect, adminOnly, createInterview);
+router.post('/:placementId', protect, adminOnly, createInterview);
 router.get('/:placementId', getInterviewsByPlacement);
 router.put('/:id', protect, adminOnly, updateInterview);
 router.delete('/:id', protect, adminOnly, deleteInterview);
