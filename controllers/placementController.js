@@ -154,19 +154,22 @@ exports.deletePlacementUpdate = async (req, res) => {
   try {
     const { placementId, updateId } = req.params;
 
-    const placement = await Placement.findByIdAndUpdate(
-      placementId,
-      {
-        $pull: {
-          updates: { _id: updateId }, // Removes the update with the given ID
-        },
-      },
-      { new: true }
-    );
+    let placement = await Placement.findById(placementId);
 
     if (!placement) {
       return res.status(404).json({ message: 'Placement not found' });
     }
+
+    if (!placement.updates.id(updateId)) {
+      return res.status(404).json({ message: 'Update not found' });
+    }
+
+    placement = await Placement.findByIdAndUpdate(
+      placementId,
+      { $pull: { updates: { _id: updateId } } },
+      { new: true }
+    );
+    await placement.save();
 
     res.json({ message: 'Update deleted successfully', placement });
   } catch (err) {
