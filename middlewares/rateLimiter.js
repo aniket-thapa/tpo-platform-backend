@@ -1,11 +1,12 @@
 const rateLimit = require('express-rate-limit');
 
 const limiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 1000, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: {
     message: 'Too many requests from this IP, please try again later.',
   },
+  skip: () => process.env.NODE_ENV === 'development',
 });
 
 module.exports = limiter;
