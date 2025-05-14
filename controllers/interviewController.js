@@ -8,7 +8,9 @@ exports.createInterview = async (req, res) => {
       placementId,
       ...req.body,
     });
-    res.status(201).json(interview);
+    res
+      .status(201)
+      .json({ message: 'Interview round created successfully', interview });
   } catch (err) {
     res
       .status(400)
@@ -26,11 +28,11 @@ exports.getInterviewsByPlacement = async (req, res) => {
     });
     if (!interviews || interviews.length === 0)
       return res.status(404).json({ message: 'No interviews found' });
-    res.json({ message: 'Interviews fetched successfully', interviews });
+    res.json({ message: 'Interview rounds fetched successfully', interviews });
   } catch (err) {
     res
       .status(500)
-      .json({ message: 'Error fetching interviews', error: err.message });
+      .json({ message: 'Error fetching interview rounds', error: err.message });
   }
 };
 
@@ -48,11 +50,11 @@ exports.updateInterview = async (req, res) => {
     );
     if (!updated)
       return res.status(404).json({ message: 'Interview round not found' });
-    res.json({ message: 'Interview round updated successfully', updated });
+    res.json({ message: 'Interview round edited successfully', updated });
   } catch (err) {
     res
       .status(400)
-      .json({ message: 'Error updating interview', error: err.message });
+      .json({ message: 'Error editing interview round', error: err.message });
   }
 };
 
