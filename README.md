@@ -52,6 +52,7 @@ PORT=5000
 MONGO_URI=your_mongodb_uri/
 JWT_SECRET=supersecurejwtkey
 JWT_EXPIRE=1d
+ADMIN_ROLLNO=your_admin_code
 ```
 
 ### 4. Start the server
