@@ -110,8 +110,6 @@ node server.js
 ## 📌 Notes
 
 - Students are never meant to apply via the platform. They are only informed where/how to apply.
-- Every placement/update is timestamped for clarity.
-- Roll number is used as a key identifier for students.
 
 ---
 
