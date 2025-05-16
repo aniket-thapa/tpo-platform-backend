@@ -82,17 +82,17 @@ node server.js
 
 ### 🗓️ Interview Rounds
 
-- `POST /api/interviews`
+- `POST /api/interviews` _(Admin only)_
 - `GET /api/interviews/:placementId`
-- `PUT /api/interviews/:id`
-- `DELETE /api/interviews/:id`
+- `PUT /api/interviews/:id` _(Admin only)_
+- `DELETE /api/interviews/:id` _(Admin only)_
 
 ### 🏆 Final Selections
 
-- `POST /api/selections`
+- `POST /api/selections` _(Admin only)_
 - `GET /api/selections/:placementId`
-- `PUT /api/selections/:id`
-- `DELETE /api/selections/:id`
+- `PUT /api/selections/:id` _(Admin only)_
+- `DELETE /api/selections/:id` _(Admin only)_
 
 ---
 
