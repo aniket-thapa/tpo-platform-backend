@@ -91,7 +91,6 @@ exports.getMe = async (req, res) => {
 
 exports.updateMe = async (req, res) => {
   try {
-    const { name, email, password, newPassword } = req.body;
     if (
       (!req.body.name && !req.body.email && !req.body.password) ||
       !req.body.newPassword
