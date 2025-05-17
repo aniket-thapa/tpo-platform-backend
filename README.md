@@ -52,6 +52,7 @@ PORT=5000
 MONGO_URI=your_mongodb_uri/
 JWT_SECRET=supersecurejwtkey
 JWT_EXPIRE=1d
+ADMIN_ROLLNO=your_admin_code
 ```
 
 ### 4. Start the server
@@ -82,17 +83,17 @@ node server.js
 
 ### 🗓️ Interview Rounds
 
-- `POST /api/interviews`
+- `POST /api/interviews` _(Admin only)_
 - `GET /api/interviews/:placementId`
-- `PUT /api/interviews/:id`
-- `DELETE /api/interviews/:id`
+- `PUT /api/interviews/:id` _(Admin only)_
+- `DELETE /api/interviews/:id` _(Admin only)_
 
 ### 🏆 Final Selections
 
-- `POST /api/selections`
+- `POST /api/selections` _(Admin only)_
 - `GET /api/selections/:placementId`
-- `PUT /api/selections/:id`
-- `DELETE /api/selections/:id`
+- `PUT /api/selections/:id` _(Admin only)_
+- `DELETE /api/selections/:id` _(Admin only)_
 
 ---
 
@@ -109,8 +110,6 @@ node server.js
 ## 📌 Notes
 
 - Students are never meant to apply via the platform. They are only informed where/how to apply.
-- Every placement/update is timestamped for clarity.
-- Roll number is used as a key identifier for students.
 
 ---
 
