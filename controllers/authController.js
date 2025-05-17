@@ -91,10 +91,7 @@ exports.getMe = async (req, res) => {
 
 exports.updateMe = async (req, res) => {
   try {
-    if (
-      (!req.body.name && !req.body.email && !req.body.password) ||
-      !req.body.newPassword
-    )
+    if (!req.body.name && !req.body.email && !req.body.password)
       return res.status(400).json({ message: 'No fields to update' });
 
     if (req.body.password && !req.body.newPassword)
@@ -116,6 +113,15 @@ exports.updateMe = async (req, res) => {
     const user = await User.findById(req.user.id);
 
     if (!user) return res.status(404).json({ message: 'User not found' });
+
+    if (user.name === req.body.name)
+      return res.status(400).json({ message: 'Name cannot be same' });
+
+    if (
+      user.email === req.body.email ||
+      req.body.email === (await User.find({ email: req.body.email }))
+    )
+      return res.status(400).json({ message: 'Email already exists' });
 
     if (user.name === req.body.name && user.email === req.body.email)
       return res.status(400).json({ message: 'No changes made' });
