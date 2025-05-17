@@ -88,3 +88,42 @@ exports.getMe = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+
+exports.updateMe = async (req, res) => {
+  try {
+    const { name, email, password, newPassword } = req.body;
+    if ((!name && !email && !password) || !newPassword)
+      return res.status(400).json({ message: 'No fields to update' });
+
+    if (password && !newPassword)
+      return res.status(400).json({ message: 'New password required' });
+    if (newPassword && !password)
+      return res
+        .status(400)
+        .json({ message: 'Current password required to set new password' });
+
+    if (newPassword && password && password === newPassword)
+      return res
+        .status(400)
+        .json({ message: 'New password cannot be same as current password' });
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    if (user.name === name && user.email === email)
+      return res.status(400).json({ message: 'No changes made' });
+
+    if (name) user.name = name;
+    if (email) user.email = email;
+
+    if (password && (await user.matchPassword(password)))
+      user.password = newPassword;
+
+    const updatedUser = await user.save();
+
+    res.json({ message: 'User updated successfully', user: updatedUser });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};

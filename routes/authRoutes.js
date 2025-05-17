@@ -5,6 +5,7 @@ const {
   registerUser,
   loginUser,
   getMe,
+  updateMe,
 } = require('../controllers/authController');
 const { protect } = require('../middlewares/authMiddleware');
 const validateRequest = require('../middlewares/validateRequest');
@@ -27,6 +28,6 @@ router.post(
   loginUser
 );
 
-router.get('/me', protect, getMe);
+router.route('/me').get(protect, getMe).put(protect, updateMe);
 
 module.exports = router;
