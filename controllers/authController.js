@@ -119,7 +119,7 @@ exports.updateMe = async (req, res) => {
 
     if (
       user.email === req.body.email ||
-      req.body.email === (await User.find({ email: req.body.email }))
+      (await User.find({ email: req.body.email }))
     )
       return res.status(400).json({ message: 'Email already exists' });
 
