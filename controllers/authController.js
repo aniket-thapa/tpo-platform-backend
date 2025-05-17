@@ -92,17 +92,24 @@ exports.getMe = async (req, res) => {
 exports.updateMe = async (req, res) => {
   try {
     const { name, email, password, newPassword } = req.body;
-    if ((!name && !email && !password) || !newPassword)
+    if (
+      (!req.body.name && !req.body.email && !req.body.password) ||
+      !req.body.newPassword
+    )
       return res.status(400).json({ message: 'No fields to update' });
 
-    if (password && !newPassword)
+    if (req.body.password && !req.body.newPassword)
       return res.status(400).json({ message: 'New password required' });
-    if (newPassword && !password)
+    if (req.body.newPassword && !req.body.password)
       return res
         .status(400)
         .json({ message: 'Current password required to set new password' });
 
-    if (newPassword && password && password === newPassword)
+    if (
+      req.body.newPassword &&
+      req.body.password &&
+      req.body.password === req.body.newPassword
+    )
       return res
         .status(400)
         .json({ message: 'New password cannot be same as current password' });
@@ -111,14 +118,14 @@ exports.updateMe = async (req, res) => {
 
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    if (user.name === name && user.email === email)
+    if (user.name === req.body.name && user.email === req.body.email)
       return res.status(400).json({ message: 'No changes made' });
 
-    if (name) user.name = name;
-    if (email) user.email = email;
+    if (req.body.name) user.name = req.body.name;
+    if (req.body.email) user.email = req.body.email;
 
-    if (password && (await user.matchPassword(password)))
-      user.password = newPassword;
+    if (req.body.password && (await user.matchPassword(req.body.password)))
+      user.password = req.body.newPassword;
 
     const updatedUser = await user.save();
 
