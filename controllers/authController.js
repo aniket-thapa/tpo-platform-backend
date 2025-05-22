@@ -90,57 +90,61 @@ exports.getMe = async (req, res) => {
 };
 
 exports.updateMe = async (req, res) => {
+  const isSame = (current, updated) => current === updated;
   try {
-    if (!req.body.name && !req.body.email && !req.body.password)
+    const { name, email, password, newPassword } = req.body;
+
+    if (!name && !email && !password)
       return res.status(400).json({ message: 'No fields to update' });
 
-    if (req.body.password && !req.body.newPassword)
-      return res.status(400).json({ message: 'New password required' });
-    if (req.body.newPassword && !req.body.password)
-      return res
-        .status(400)
-        .json({ message: 'Current password required to set new password' });
+    if ((password && !newPassword) || (!password && newPassword)) {
+      return res.status(400).json({
+        message: password
+          ? 'New password required'
+          : 'Current password required to set new password',
+      });
+    }
 
-    if (
-      req.body.newPassword &&
-      req.body.password &&
-      req.body.password === req.body.newPassword
-    )
+    if (password === newPassword)
       return res
         .status(400)
         .json({ message: 'New password cannot be same as current password' });
 
-    if (
-      req.body.email &&
-      (await User.find({ email: req.body.email })).length > 0
-    )
-      return res.status(400).json({ message: 'Email already registered' });
-
     const user = await User.findById(req.user.id);
-
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    if (req.body.name && user.name === req.body.name)
-      return res.status(400).json({ message: 'Name cannot be same' });
-
-    if (req.body.email && user.email === req.body.email) {
-      return res.status(400).json({ message: 'Email cannot be same' });
+    // Check duplicate email
+    if (email && email !== user.email) {
+      const emailExists = await User.exists({ email });
+      if (emailExists)
+        return res.status(400).json({ message: 'Email already registered' });
     }
 
-    if (req.body.name) user.name = req.body.name;
-    if (req.body.email) user.email = req.body.email;
+    // Update fields if they are different
+    if (name && isSame(name, user.name))
+      return res.status(400).json({ message: 'Name cannot be same' });
 
-    if (req.body.password) {
-      if (!(await user.matchPassword(req.body.password)))
+    if (email && isSame(email, user.email))
+      return res.status(400).json({ message: 'Email cannot be same' });
+
+    if (name) user.name = name;
+    if (email) user.email = email;
+
+    // Handle password change
+    if (password && newPassword) {
+      const validPassword = await user.matchPassword(password);
+      if (!validPassword)
         return res.status(401).json({ message: 'Invalid credentials' });
-      user.password = req.body.newPassword;
+
+      user.password = newPassword;
     }
 
     const updatedUser = await user.save();
     const { password: _, ...userData } = updatedUser.toObject();
 
-    res.json({ message: 'User updated successfully', user: { updatedUser } });
+    res.json({ message: 'User updated successfully', user: userData });
   } catch (err) {
+    console.error('Update error:', err);
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
