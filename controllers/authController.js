@@ -24,7 +24,6 @@ exports.registerUser = async (req, res) => {
         return res
           .status(400)
           .json({ message: 'Invalid faculty number for admin' });
-      rollno = null;
     }
 
     const userExists = await User.findOne({ email });
