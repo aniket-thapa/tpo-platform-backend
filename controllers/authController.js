@@ -137,8 +137,9 @@ exports.updateMe = async (req, res) => {
     }
 
     const updatedUser = await user.save();
+    const { password: _, ...userData } = updatedUser.toObject();
 
-    res.json({ message: 'User updated successfully', user: {} });
+    res.json({ message: 'User updated successfully', user: { updatedUser } });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
