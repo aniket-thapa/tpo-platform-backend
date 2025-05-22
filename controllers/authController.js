@@ -110,31 +110,35 @@ exports.updateMe = async (req, res) => {
         .status(400)
         .json({ message: 'New password cannot be same as current password' });
 
+    if (
+      req.body.email &&
+      (await User.find({ email: req.body.email })).length > 0
+    )
+      return res.status(400).json({ message: 'Email already registered' });
+
     const user = await User.findById(req.user.id);
 
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    if (user.name === req.body.name)
+    if (req.body.name && user.name === req.body.name)
       return res.status(400).json({ message: 'Name cannot be same' });
 
-    if (
-      user.email === req.body.email ||
-      (await User.find({ email: req.body.email }))
-    )
-      return res.status(400).json({ message: 'Email already exists' });
-
-    if (user.name === req.body.name && user.email === req.body.email)
-      return res.status(400).json({ message: 'No changes made' });
+    if (req.body.email && user.email === req.body.email) {
+      return res.status(400).json({ message: 'Email cannot be same' });
+    }
 
     if (req.body.name) user.name = req.body.name;
     if (req.body.email) user.email = req.body.email;
 
-    if (req.body.password && (await user.matchPassword(req.body.password)))
+    if (req.body.password) {
+      if (!(await user.matchPassword(req.body.password)))
+        return res.status(401).json({ message: 'Invalid credentials' });
       user.password = req.body.newPassword;
+    }
 
     const updatedUser = await user.save();
 
-    res.json({ message: 'User updated successfully', user: updatedUser });
+    res.json({ message: 'User updated successfully', user: {} });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
