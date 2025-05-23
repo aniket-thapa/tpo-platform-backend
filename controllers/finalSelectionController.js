@@ -30,11 +30,7 @@ exports.getSelectionByPlacement = async (req, res) => {
     const selections = await FinalSelection.find({
       placementId: req.params.placementId,
     });
-    if (selections.length === 0)
-      return res
-        .status(404)
-        .json({ message: 'No final selection found for this placement' });
-    res.json(selections);
+    res.json({ message: 'Final selections fetched successfully', selections });
   } catch (err) {
     res
       .status(500)
