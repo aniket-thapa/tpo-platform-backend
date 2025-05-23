@@ -10,7 +10,7 @@ const {
 const { protect, adminOnly } = require('../middlewares/authMiddleware');
 
 router.post('/:placementId', protect, adminOnly, createFinalSelection);
-router.get('/:placementId', getSelectionByPlacement);
+router.get('/:placementId', protect, getSelectionByPlacement);
 router.put('/:id', protect, adminOnly, updateFinalSelection);
 router.delete('/:id', protect, adminOnly, deleteFinalSelection);
 
