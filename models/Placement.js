@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const InterviewRound = require('./InterviewRound');
 
 const placementSchema = new mongoose.Schema(
   {
@@ -44,9 +45,7 @@ const placementSchema = new mongoose.Schema(
 // Firstly, delete all the interview rounds associated with the placement
 placementSchema.pre('remove', async function (next) {
   const Placement = this;
-  await mongoose
-    .model('InterviewRound')
-    .deleteMany({ placement: Placement._id });
+  await InterviewRound.deleteMany({ placement: Placement._id });
   next();
 });
 
