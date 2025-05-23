@@ -26,8 +26,6 @@ exports.getInterviewsByPlacement = async (req, res) => {
     }).sort({
       interviewDate: 1,
     });
-    if (!interviews || interviews.length === 0)
-      return res.status(404).json({ message: 'No interviews found' });
     res.json({ message: 'Interview rounds fetched successfully', interviews });
   } catch (err) {
     res
