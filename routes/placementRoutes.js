@@ -20,7 +20,7 @@ router
 
 router
   .route('/:id')
-  .get(getPlacementById)
+  .get(protect, getPlacementById)
   .put(protect, adminOnly, updatePlacement)
   .delete(protect, adminOnly, deletePlacement);
 
