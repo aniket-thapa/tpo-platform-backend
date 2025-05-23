@@ -45,7 +45,7 @@ const placementSchema = new mongoose.Schema(
 // Firstly, delete all the interview rounds associated with the placement
 placementSchema.post('findOneAndDelete', async function (doc) {
   if (doc) {
-    await InterviewRound.deleteMany({ placement: doc._id });
+    await InterviewRound.deleteMany({ placementId: doc._id });
   }
 });
 
