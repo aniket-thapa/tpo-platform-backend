@@ -43,10 +43,10 @@ const placementSchema = new mongoose.Schema(
 );
 
 // Firstly, delete all the interview rounds associated with the placement
-placementSchema.pre('remove', async function (next) {
-  const Placement = this;
-  await InterviewRound.deleteMany({ placement: Placement._id });
-  next();
+placementSchema.post('findOneAndDelete', async function (doc) {
+  if (doc) {
+    await InterviewRound.deleteMany({ placement: doc._id });
+  }
 });
 
 module.exports = mongoose.model('Placement', placementSchema);
