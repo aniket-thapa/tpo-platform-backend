@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const InterviewRound = require('./InterviewRound');
+const FinalSelection = require('./FinalSelection');
 
 const placementSchema = new mongoose.Schema(
   {
@@ -42,10 +43,11 @@ const placementSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Firstly, delete all the interview rounds associated with the placement
+// Middleware to delete related InterviewRound and FinalSelection documents
 placementSchema.post('findOneAndDelete', async function (doc) {
   if (doc) {
     await InterviewRound.deleteMany({ placementId: doc._id });
+    await FinalSelection.deleteMany({ placementId: doc._id });
   }
 });
 
