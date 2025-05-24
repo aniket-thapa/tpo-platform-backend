@@ -21,7 +21,10 @@ const placementSchema = new mongoose.Schema(
     },
     ctcDetails: String,
     location: String,
-    modeOfRecruitment: { type: String, enum: ['Online', 'Offline', 'Hybrid'] },
+    modeOfRecruitment: {
+      type: String,
+      enum: ['Online', 'Off-Campus', 'On-Campus'],
+    },
     tentativeDriveDate: Date,
     driveRounds: [String],
     applyLink: String,
