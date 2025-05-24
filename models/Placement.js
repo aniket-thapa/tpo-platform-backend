@@ -26,8 +26,8 @@ const placementSchema = new mongoose.Schema(
       enum: ['Online', 'Off-Campus', 'On-Campus'],
     },
     tentativeDriveDate: Date,
-    selectionProcess: [String],
-    registrationLink: String,
+    driveRounds: [String],
+    applyLink: String,
     applicationDeadline: Date,
     notes: [String],
     updates: [
