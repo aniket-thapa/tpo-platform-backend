@@ -104,7 +104,7 @@ exports.updateMe = async (req, res) => {
       });
     }
 
-    if (password === newPassword)
+    if (password && password === newPassword)
       return res
         .status(400)
         .json({ message: 'New password cannot be same as current password' });
