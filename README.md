@@ -48,11 +48,12 @@ npm install
 Create a `.env` file in the root:
 
 ```
+NODE_ENV=development
 PORT=5000
-MONGO_URI=your_mongodb_uri/
-JWT_SECRET=supersecurejwtkey
-JWT_EXPIRE=1d
-ADMIN_ROLLNO=your_admin_code
+MONGO_URI=
+JWT_SECRET=
+JWT_EXPIRE=3d
+ADMIN_ROLLNO=admin
 ```
 
 ### 4. Start the server
